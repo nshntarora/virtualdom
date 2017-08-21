@@ -41,10 +41,21 @@ function createDOM(vdom) {
 }
 
 function render(id, vdom) {
+  document.getElementById(id).innerHTML = '';
   document.getElementById(id).appendChild(createDOM(vdom));
 }
 
+// By now we are able to convert our virtual dom representation in an actual dom
+// now, what we have to focus on is diffing the objects to see what has changed.
+// But, before that, let's write a small function that changes one key and updates our representation.
+
+function updateNode(vdom) {
+  vdom.children[1].children[0] = 'Nishant!';
+  return vdom;
+}
 
 function handleReload() {
   render('app', vdom);
+  var newdom = updateNode(vdom);
+  render('app', newdom);
 }
