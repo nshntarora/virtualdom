@@ -48,7 +48,6 @@ function initialRender() {
 
 function handleReload() {
   var newdom = JSON.parse(JSON.stringify(vdom));
-  newdom.type = 'span';
   newdom.children[1].children[0] = 'Nishant!';
   var root = document.getElementById('app');
   updateNode(root, vdom, newdom);
@@ -61,7 +60,7 @@ function updateNode(parent, oldnode, newnode, index=0) {
     parent.removeChild(parent.childNodes[index]);
   } else if (diffNodes(oldnode, newnode)) {
     parent.replaceChild(createDOM(newnode), parent.childNodes[index]);
-  } else {
+  } else if (newnode.type) {
     for (var i = 0; i < newnode.children.length || i < oldnode.children.length; i++) {
       updateNode(parent.childNodes[index], oldnode.children[i], newnode.children[i], i);
     }
@@ -79,7 +78,7 @@ function diffNodes(oldnode, newnode) {
       // If both nodes are elements, but are different.
       return true;
     }
-    else if (oldnode != newnode) {
+    else if ((typeof oldnode === 'string' && typeof newnode === 'string') && newnode != oldnode) {
       // If both nodes are string and are not equal
       return true;
     }
