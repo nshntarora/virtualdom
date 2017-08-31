@@ -8,11 +8,11 @@
 // ================================================
 
 
-// a virtual dom is a virtual representation of the old browser DOM you're familiar with
-// the first step is to convert the the dom we want to be displayed in a form that we could operate on
-// we're going to use plain old JavaScript objects to represent the DOM virtually.
+// A virtual DOM is a virtual representation of the old browser DOM you're familiar with.
+// The first step is to convert the the DOM we want to be displayed in a form that we could operate on.
+// We're going to use plain old JavaScript objects for this representation.
 
-// That will be our virtual DOM.
+// Here is your virtual DOM
 
 var vdom = {
   type: 'div',
@@ -28,10 +28,18 @@ var vdom = {
   ]
 };
 
+// If you observe, it has two kinds of elements, objects and strings.
+// The objects are our HTML elements, they have two keys, type and children.
+// The type key is the element tag. The children key is an array of elements.
+// The children of an object may be other objects, or just strings.
+// These strings are the second kind of elements. They are the text nodes,
+// or the actual information that will wrapped in and then displayed in the parent node.
+
 // But, this DOM will also have to change the real DOM that we update and the browser renders.
 
-// Now we have our virtual dom, next step is to convert it into an actual DOM that the browser could render
-// For this we will be using the javascript createElement and createTextNode functions
+// Now we have our virtual dom,
+// Next step is to convert it into an actual DOM that the browser could render.
+// For this we will be using the JavaScript createElement and createTextNode functions
 
 
 
@@ -43,7 +51,7 @@ var vdom = {
 // ================================================
 
 // Create DOM node goes recursively through all children nodes, creates element and then appends
-// that to its immediate parent.
+// that to its parent.
 
 function createDOMNode(dom) {
   // First we check if the node is a string.
@@ -83,14 +91,15 @@ function createDOMNode(dom) {
 
 // ================================================
 
-// Now, what we have to focus on is diffing the objects to if the dom should be updated.
+// Now, what we have to focus on is diffing the objects to decide if the dom should be updated.
 
 // How do you diff it?
-// Our element object in the virtual dom has two keys, type and children
-// Our text object is just a string.
+// Our element object in the virtual dom has two keys, type and children (see section 1)
 
 // This function has a few if conditions that check if the two nodes passed are different
 // This just diffs one node. There is no recursion involved here.
+// Let's walk you through it step by step.
+
 function diffNodes(oldnode, newnode) {
   if (oldnode && newnode) {
     if (typeof oldnode != typeof newnode) {
@@ -143,8 +152,8 @@ function updateNode(parent, oldnode, newnode, index=0) {
     // If the new node doesn't exist, remove that node
     parent.removeChild(parent.childNodes[index]);
   } else if (diffNodes(oldnode, newnode)) {
-    // Now, what is both the nodes exist. Check if the node has changed
-    // If it has, then replace the old node with the new node
+    // If both the nodes exist. Check if the new node is different.
+    // If they are, then replace the old node with the new node
     parent.replaceChild(createDOMNode(newnode), parent.childNodes[index]);
   } else if (newnode.type) {
     // If the old and new nodes haven't changed, check if their children have changed
@@ -159,10 +168,19 @@ function updateNode(parent, oldnode, newnode, index=0) {
 
 // ========================================
 
+
+// That's it.
+// You're now able to create nodes, diff them and then update the actual dom based on your diff.
+// In other words,
+// You now have fair idea of how this Virtual DOM thing you keep hearing about actually works.
+
+
+// ========================================
+
 // Oh, this function, it doesn't do much.
 // This is the function that's called when you click on "Start"
 // It just renders the dom representation above
-function initialRender() {
+function handleStart() {
   var root = document.getElementById('app');
   updateNode(root,null, vdom);
 }
